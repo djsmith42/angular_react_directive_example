@@ -1,0 +1,43 @@
+body {
+    font-family: arial;
+}
+
+.calendar {
+    margin: 50px;
+}
+
+.btn {
+    margin-bottom: 10px;
+}
+
+table {
+    border-right: 2px solid gray;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.day-header {
+    border: 1px solid gray;
+}
+
+.day-header:hover {
+    cursor: pointer;
+}
+
+.hour-cell {
+    width: 120px;
+    text-align: center;
+    border-left: 1px solid gray;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    height: 40px;
+}
+
+.hour-cell:hover {
+    background-color: #eef;
+}
+
+.hour-cell.searching {
+    color: red;
+    font-size: 12px;
+}
