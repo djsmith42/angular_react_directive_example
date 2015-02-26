@@ -43,7 +43,7 @@ table {
 }
 
 .hour-cell:hover {
-    background-color: #eef;
+    background-color: #eef !important;
 }
 
 .hour-cell .searching {
@@ -54,12 +54,15 @@ table {
 
 .hour-cell .good-results {
   color: #090;
+  background: #efffef;
 }
 
 .hour-cell .weak-results {
   color: orange;
+  background: #ffffef;
 }
 
 .hour-cell .bad-results {
   color: red;
+  background: #ffefef;
 }
