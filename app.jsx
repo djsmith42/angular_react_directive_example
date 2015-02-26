@@ -11,41 +11,34 @@ directive("myCalendarCell", function() {
   return {
     restrict: 'E',
     replace: true,
-    scope: {
-      status: '='
-    },
+    scope: true,
     template:
-            '<div ng-click="cellClicked(day, hour)" ng-class="cellClass()">' +
-            '  <div ng-if="showTip()">' +
-            '    Click to search' +
-            '  </div>' +
-            '  <div ng-if="showSpinner()">' +
-            '    Searching' +
-            '  </div>' +
-            '  <div ng-if="showHour()">' +
-            '    {{hour}}:00' +
-            '  </div>' +
-            '  <div ng-if="showSearchResults()">' +
-            '    <div>{{status.searchResults.options}}</div>' +
-            '    <div>results</div>' +
-            '  </div>' +
-            '</div>',
+      '<div ng-click="cellClicked(day, hour)" ng-class="cellClass()">' +
+      '  <div ng-if="showSpinner()">' +
+      '    Searching' +
+      '  </div>' +
+      '  <div ng-if="showHour()" class="time">' +
+      '    {{hour}}:00' +
+      '  </div>' +
+      '  <div ng-if="showSearchResults()">' +
+      '    <div>{{status.searchResults.options}}</div>' +
+      '    <div>results</div>' +
+      '  </div>' +
+      '</div>',
     link: function(scope, element, attrs) {
       scope.day = attrs.day;
       scope.hour = attrs.hour;
+      scope.status = {};
     },
-    controller: function($scope, $timeout) {
-      $scope.showTip = function() {
-        return $scope.status.isHovered && !$scope.status.isSearching;
-      }
+    controller: function($scope, $timeout, $rootScope) {
       $scope.showSpinner = function() {
         return $scope.status.isSearching;
       }
       $scope.showHour = function() {
-        return !$scope.status.isSearching && !$scope.status.isHovered && !$scope.status.searchResults;
+        return !$scope.status.isSearching && !$scope.status.searchResults;
       }
       $scope.showSearchResults = function() {
-        return $scope.status.searchResults && !$scope.status.isHovered;
+        return $scope.status.searchResults;
       }
       $scope.cellClass = function() {
         if ($scope.status.isSearching) {
@@ -60,7 +53,6 @@ directive("myCalendarCell", function() {
           }
         }
       }
-
       $scope.cellClicked = function() {
         var alreadySearching = $scope.status.isSearching;
         delete $scope.status.searchResults;
@@ -99,8 +91,8 @@ directive("myCalendar", function() {
             '   </th>' +
             '  </tr>' +
             '  <tr ng-repeat="hour in hours">' +
-            '   <td ng-repeat="day in days" class="hour-cell" ng-mouseenter="cellEntered(day, hour)">' +
-            '     <my-calendar-cell hour="{{hour}}" day="{{day}}" status="statuses[day][hour]"></my-calendar-cell>' +
+            '   <td ng-repeat="day in days" class="hour-cell">' +
+            '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
             '   </td>' +
             '  </tr>' +
             ' </table>' +
@@ -108,28 +100,6 @@ directive("myCalendar", function() {
         link: function(scope, element, attrs) {
             scope.hours = HOURS;
             scope.days  = DAYS;
-            scope.statuses = {};
-            angular.forEach(DAYS, function(day) {
-              scope.statuses[day] = {};
-              angular.forEach(HOURS, function(hour) {
-                scope.statuses[day][hour] = {
-                  isSearching: false,
-                  isHovered: false
-                }
-              });
-            });
-
-            scope.cellEntered = function(day, hour) {
-                _hoverHelper(day, hour);
-            }
-
-            scope.isHovered = function(day, hour) {
-                return scope.statuses[day][hour].isHovered;
-            }
-
-            scope.isSearching = function(day, hour) {
-                return scope.statuses[day][hour].isSearching;
-            }
 
             scope.searchAll = function() {
               scope.$broadcast('allSearchRequested');
@@ -137,14 +107,6 @@ directive("myCalendar", function() {
 
             scope.dayHeaderClicked = function(day) {
               scope.$broadcast('daySearchRequested', day);
-            }
-
-            function _hoverHelper(iday, ihour) {
-                angular.forEach(DAYS, function(day) {
-                    angular.forEach(HOURS, function(hour) {
-                        scope.statuses[day][hour].isHovered = (day == iday && hour == ihour);
-                    });
-                });
             }
         }
     }
@@ -196,6 +158,7 @@ directive("myCalendarReact", function() {
         render: function() {
           var options = this.state.searchResults && this.state.searchResults.options;
           var classes = React.addons.classSet({
+            'time'        : !this.state.isSearching && options === undefined,
             'searching'   : this.state.isSearching,
             'good-results': options && options > 3,
             'weak-results': options && options > 1 && options < 3,
@@ -207,15 +170,9 @@ directive("myCalendarReact", function() {
                 <div className={classes}>Searching</div>
               </td>
               );
-          } else if (this.state.isHovered) {
-            return (
-              <td className='hour-cell' onClick={this.clicked} onMouseEnter={this.mouseEntered}>
-                <div className={classes}>Click to Search</div>
-              </td>
-              );
           } else if (this.state.searchResults) {
             return (
-              <td className='hour-cell' onClick={this.clicked} onMouseEnter={this.mouseEntered}>
+              <td className='hour-cell' onClick={this.clicked}>
                 <div className={classes}>
                   <div>{this.state.searchResults}</div>
                   <div>results</div>
@@ -224,7 +181,7 @@ directive("myCalendarReact", function() {
               );
           } else {
             return (
-              <td className='hour-cell' onClick={this.clicked} onMouseEnter={this.mouseEntered}>
+              <td className='hour-cell' onClick={this.clicked}>
                 <div className={classes}>
                   {this.props.hour}:00
                 </div>
@@ -234,20 +191,11 @@ directive("myCalendarReact", function() {
         },
         getInitialState: function() {
           return {
-            isHovered: false,
             isSearching: false
           }
         },
         componentDidMount: function() {
           cellCache[this.props.day][this.props.hour] = this;
-        },
-        mouseEntered: function() {
-          for (var i=0; i < HOURS.length; i++) {
-            var hour = HOURS[i];
-            for (var j=0; j < DAYS.length; j++) {
-              _cellHovered(this.props.day, this.props.hour);
-            }
-          }
         },
         clicked: function() {
           var props = this.props;
@@ -297,18 +245,6 @@ directive("myCalendarReact", function() {
           }
         }
       });
-
-      function _cellHovered(day, hour) {
-        for (var i=0; i < DAYS.length; i++) {
-          for (var j=0; j < HOURS.length; j++) {
-            var cell = cellCache[DAYS[i]][HOURS[j]];
-            var isHovered = (day == cell.props.day && hour == cell.props.hour);
-            if (cell.state.isHovered != isHovered) {
-              cell.setState({isHovered: isHovered});
-            }
-          }
-        }
-      }
 
       React.renderComponent(Calendar(), element[0]);
     }

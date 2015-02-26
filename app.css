@@ -31,6 +31,15 @@ table {
     border-bottom: 1px solid #eee;
     cursor: pointer;
     height: 40px;
+    padding: 0;
+}
+
+.hour-cell > div {
+  height: 100%;
+}
+
+.hour-cell .time {
+  padding-top: 10px; /* poor man's vertical centering */
 }
 
 .hour-cell:hover {
@@ -40,6 +49,7 @@ table {
 .hour-cell .searching {
     color: blue;
     font-size: 12px;
+    padding-top: 12px; /* poor man's vertical centering */
 }
 
 .hour-cell .good-results {
