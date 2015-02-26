@@ -24,6 +24,11 @@ table {
     cursor: pointer;
 }
 
+.hour-cell:hover > div {
+    background-color: #559 !important;
+    color: white;
+}
+
 .hour-cell {
     width: 120px;
     text-align: center;
@@ -40,10 +45,6 @@ table {
 
 .hour-cell .time {
   padding-top: 10px; /* poor man's vertical centering */
-}
-
-.hour-cell:hover {
-    background-color: #eef !important;
 }
 
 .hour-cell .searching {
