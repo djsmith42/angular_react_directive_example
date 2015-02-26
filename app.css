@@ -37,7 +37,19 @@ table {
     background-color: #eef;
 }
 
-.hour-cell.searching {
-    color: red;
+.hour-cell .searching {
+    color: blue;
     font-size: 12px;
+}
+
+.hour-cell .good-results {
+  color: #090;
+}
+
+.hour-cell .weak-results {
+  color: orange;
+}
+
+.hour-cell .bad-results {
+  color: red;
 }
