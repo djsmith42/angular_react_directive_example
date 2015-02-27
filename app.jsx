@@ -6,11 +6,45 @@ var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1
 var DAYS  = ["1 October", "2 October", "3 October", "4 October", "5 October", "6 October", "7 October", "8 OCtober", "9 October", "10 October", "11 October", "12  October", "13 October", "14 October", "15 October", "16 October", "17 October", "18 October", "19 October", "20 October"] //, "21 October", "22 October", "23 October", "24 October", "25 October", "26 October", "27 October", "28 October", "29 October", "30 October", "31 October"];
 
 var randomMillis = function() {
-  return Math.floor(Math.random() * 500);
+  return Math.floor(Math.random() * 1000);
 }
 
 angular.module("myapp", []).
+directive("myCalendar", function() {
+    return {
+        restrict: 'E',
+        scope: {},
+        replace: true,
+        template:
+            '<div class="calendar">' +
+            ' <button class="btn" ng-click="searchAll()">Search all month</button>' +
+            ' <table>' +
+            '  <tr>' +
+            '   <th ng-repeat="day in days" class="day-header" ng-click="dayHeaderClicked(day)">' +
+            '     {{day}}' +
+            '   </th>' +
+            '  </tr>' +
+            '  <tr ng-repeat="hour in hours">' +
+            '   <td ng-repeat="day in days" class="hour-cell">' +
+            '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
+            '   </td>' +
+            '  </tr>' +
+            ' </table>' +
+            '</button>',
+        link: function(scope, element, attrs) {
+            scope.hours = HOURS;
+            scope.days  = DAYS;
 
+            scope.searchAll = function() {
+              scope.$broadcast('allSearchRequested');
+            }
+
+            scope.dayHeaderClicked = function(day) {
+              scope.$broadcast('daySearchRequested', day);
+            }
+        }
+    }
+}).
 directive("myCalendarCell", function() {
   return {
     restrict: 'E',
@@ -79,41 +113,6 @@ directive("myCalendarCell", function() {
       });
     }
   }
-}).
-directive("myCalendar", function() {
-    return {
-        restrict: 'E',
-        scope: {},
-        replace: true,
-        template:
-            '<div class="calendar">' +
-            ' <button class="btn" ng-click="searchAll()">Search all month</button>' +
-            ' <table>' +
-            '  <tr>' +
-            '   <th ng-repeat="day in days" class="day-header" ng-click="dayHeaderClicked(day)">' +
-            '     {{day}}' +
-            '   </th>' +
-            '  </tr>' +
-            '  <tr ng-repeat="hour in hours">' +
-            '   <td ng-repeat="day in days" class="hour-cell">' +
-            '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
-            '   </td>' +
-            '  </tr>' +
-            ' </table>' +
-            '</button>',
-        link: function(scope, element, attrs) {
-            scope.hours = HOURS;
-            scope.days  = DAYS;
-
-            scope.searchAll = function() {
-              scope.$broadcast('allSearchRequested');
-            }
-
-            scope.dayHeaderClicked = function(day) {
-              scope.$broadcast('daySearchRequested', day);
-            }
-        }
-    }
 }).
 directive("myCalendarReact", function() {
   return {
