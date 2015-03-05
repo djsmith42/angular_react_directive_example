@@ -118,6 +118,7 @@ directive("myCalendarReact", function() {
     scope: true,
     template: '<div></div>',
     link: function(scope, element, attrs) {
+      // React and Angular, living in harmony:
       React.render(<Calendar/>, element[0]);
     }
   }
