@@ -18,23 +18,24 @@ directive("myCalendar", function() {
         restrict: 'E',
         scope: true,
         replace: true,
-        template:
-          '<div>' +
-          ' <button class="btn" ng-hide="loaded" ng-click="load()">Load</button>' +
-          ' <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>' +
-          ' <table ng-if="loaded">' +
-          '  <tr>' +
-          '   <th ng-repeat="day in days" class="day-header">' +
-          '     {{day}}' +
-          '   </th>' +
-          '  </tr>' +
-          '  <tr ng-repeat="hour in hours">' +
-          '   <td ng-repeat="day in days" class="hour-cell">' +
-          '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
-          '   </td>' +
-          '  </tr>' +
-          ' </table>' +
-          '</button>',
+        template:`
+          <div>
+           <button class="btn" ng-hide="loaded" ng-click="load()">Load</button>
+           <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>
+           <table ng-if="loaded">
+            <tr>
+             <th ng-repeat="day in days" class="day-header">
+               {{day}}
+             </th>
+            </tr>
+            <tr ng-repeat="hour in hours">
+             <td ng-repeat="day in days" class="hour-cell">
+               <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>
+             </td>
+            </tr>
+           </table>
+         </button>
+         `,
         link: function(scope, element, attrs) {
             scope.loaded = false;
             scope.hours = HOURS;
@@ -55,19 +56,20 @@ directive("myCalendarCell", function() {
     restrict: 'E',
     replace: true,
     scope: true,
-    template:
-      '<div ng-click="cellClicked(day, hour)" ng-class="cellClass()">' +
-      '  <div ng-if="showHour()" class="time">' +
-      '    {{hour}}:00' +
-      '  </div>' +
-      '  <div ng-if="showSpinner()">' +
-      '    Searching' +
-      '  </div>' +
-      '  <div ng-if="showSearchResults()">' +
-      '    <div>{{status.searchResults.options}}</div>' +
-      '    <div>results</div>' +
-      '  </div>' +
-      '</div>',
+    template: `
+      <div ng-click="cellClicked(day, hour)" ng-class="cellClass()">
+        <div ng-if="showHour()" class="time">
+          {{hour}}:00
+        </div>
+        <div ng-if="showSpinner()">
+          Searching
+        </div>
+        <div ng-if="showSearchResults()">
+          <div>{{status.searchResults.options}}</div>
+          <div>results</div>
+        </div>
+      </div>
+      `,
     link: function(scope, element, attrs) {
       scope.day = attrs.day;
       scope.hour = attrs.hour;
