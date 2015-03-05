@@ -9,6 +9,8 @@ var randomMillis = function() {
   return Math.floor(Math.random() * 10000);
 }
 
+var angular = require('angular');
+
 angular.module("myapp", []).
 directive("myCalendar", function() {
     return {
@@ -112,7 +114,7 @@ directive("myCalendarCell", function() {
 directive("myCalendarReact", function() {
   return {
     restrict: 'E',
-    scope: {},
+    scope: true,
     template: '<div></div>',
     link: function(scope, element, attrs) {
       React.render(<Calendar/>, element[0]);
@@ -122,6 +124,9 @@ directive("myCalendarReact", function() {
 
 
 /* React Components */
+
+var EventEmitter = require('events');
+var React = require('react/addons');
 
 var HeaderCell = React.createClass({
   render: function() {
@@ -135,7 +140,7 @@ var HeaderRow = React.createClass({
   render: function() {
     return (
       <tr>
-        {DAYS.map(function(day) {
+        {DAYS.map((day) => {
           return <HeaderCell day={day} key={day} />
         })}
       </tr>
@@ -158,7 +163,7 @@ var Cell = React.createClass({
     }, randomMillis());
   },
   componentWillMount: function() {
-    this.props.cells.push(this);
+    this.props.events.on('search', () => this.search());
   },
   render: function() {
     var options = this.state.searchResults && this.state.searchResults.options;
@@ -173,19 +178,7 @@ var Cell = React.createClass({
       return (
         <td className='hour-cell'>
           <div className={classes}>
-            <div>
-              <div>
-                <div>
-                  <div>
-                    <div>
-                      <div>
-                        Searching
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            Searching
           </div>
         </td>
       );
@@ -193,18 +186,8 @@ var Cell = React.createClass({
       return (
         <td className='hour-cell' onClick={this.clicked}>
           <div className={classes}>
-            <div>
-              <div>
-                <div>
-                  <div>
-                    <div>
-                      <div>{this.state.searchResults}</div>
-                      <div>results</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div>{this.state.searchResults}</div>
+            <div>results</div>
           </div>
         </td>
       );
@@ -212,15 +195,7 @@ var Cell = React.createClass({
       return (
         <td className='hour-cell' onClick={this.clicked}>
           <div className={classes}>
-            <div>
-              <div>
-                <div>
-                  <div>
-                    {this.props.hour}:00
-                  </div>
-                </div>
-              </div>
-            </div>
+            {this.props.hour}:00
           </div>
         </td>
       );
@@ -239,11 +214,11 @@ var Cell = React.createClass({
 var Row = React.createClass({
   render: function() {
     var hour = this.props.hour;
-    var cells = this.props.cells;
+    var events = this.props.events;
     return (
       <tr>
-        {DAYS.map(function(day) {
-          return <Cell hour={hour} day={day} key={day} cells={cells} />
+        {DAYS.map((day) => {
+          return <Cell hour={hour} day={day} key={day} events={events} />
           })}
       </tr>
     )
@@ -251,17 +226,20 @@ var Row = React.createClass({
 });
 
 var Calendar = React.createClass({
+  componentWillMount: function() {
+    this.events = new EventEmitter();
+    this.events.setMaxListeners(0);
+  },
   getInitialState: function() {
     return {
-      isLoaded: false,
-      cells: []
+      isLoaded: false
     }
   },
   load: function() {
     this.setState({isLoaded: true});
   },
   render: function() {
-    var cells = this.state.cells;
+    var events = this.events;
     return (
       <div className='calendar'>
         {this.state.isLoaded || <button className='btn' onClick={this.load}>Load</button>}
@@ -269,8 +247,8 @@ var Calendar = React.createClass({
         {this.state.isLoaded &&
         <table>
           <HeaderRow />
-          {HOURS.map(function(hour) {
-            return <Row hour={hour} key={hour} cells={cells}/>
+          {HOURS.map((hour) => {
+            return <Row hour={hour} key={hour} events={events}/>
           })}
         </table>
         }
@@ -278,8 +256,6 @@ var Calendar = React.createClass({
       )
   },
   searchAll: function(args) {
-    this.state.cells.forEach(function(cell) {
-      cell.search();
-    });
+    this.events.emit('search');
   }
 });

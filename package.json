@@ -1,0 +1,16 @@
+{
+  "name": "angular-react-directive-example",
+  "version": "1.0.0",
+  "dependencies": {
+    "events": "^1.0.2",
+    "react": "^0.12.2",
+    "angular": "^1.4.0-beta.5"
+  },
+  "devDependencies": {
+    "jsx-loader": "^0.12.2",
+    "webpack": "^1.6.0",
+    "webpack-dev-server": "^1.7.0"
+  },
+  "author": "Dave Smith",
+  "license": "ISC"
+}
