@@ -1,13 +1,18 @@
 {
   "name": "angular-react-directive-example",
   "version": "1.0.0",
+  "scripts": {
+    "dev": "webpack-dev-server --progress --colors --port 8080"
+  },
   "dependencies": {
-    "events": "^1.0.2",
+    "angular": "^1.4.0-beta.5",
     "react": "^0.12.2",
-    "angular": "^1.4.0-beta.5"
+    "events": "^1.0.2"
   },
   "devDependencies": {
+    "css-loader": "^0.9.1",
     "jsx-loader": "^0.12.2",
+    "style-loader": "^0.8.3",
     "webpack": "^1.6.0",
     "webpack-dev-server": "^1.7.0"
   },
