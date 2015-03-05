@@ -6,7 +6,7 @@ var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1
 var DAYS  = ["1 October", "2 October", "3 October", "4 October", "5 October", "6 October", "7 October", "8 October", "9 October", "10 October", "11 October", "12  October", "13 October", "14 October", "15 October", "16 October", "17 October", "18 October", "19 October", "20 October", "21 October", "22 October", "23 October", "24 October", "25 October", "26 October", "27 October", "28 October", "29 October", "30 October", "31 October"];
 
 var randomMillis = function() {
-  return Math.floor(Math.random() * 500);
+  return Math.floor(Math.random() * 10000);
 }
 
 angular.module("myapp", []).
@@ -21,7 +21,7 @@ directive("myCalendar", function() {
             ' <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>' +
             ' <table ng-if="loaded">' +
             '  <tr>' +
-            '   <th ng-repeat="day in days" class="day-header" ng-click="dayHeaderClicked(day)">' +
+            '   <th ng-repeat="day in days" class="day-header">' +
             '     {{day}}' +
             '   </th>' +
             '  </tr>' +
@@ -35,14 +35,10 @@ directive("myCalendar", function() {
         link: function(scope, element, attrs) {
             scope.loaded = false;
             scope.hours = HOURS;
-            scope.days  = DAYS;
+            scope.days = DAYS;
 
             scope.searchAll = function() {
               scope.$broadcast('allSearchRequested');
-            }
-
-            scope.dayHeaderClicked = function(day) {
-              scope.$broadcast('daySearchRequested', day);
             }
 
             scope.load = function() {
@@ -59,17 +55,7 @@ directive("myCalendarCell", function() {
     template:
       '<div ng-click="cellClicked(day, hour)" ng-class="cellClass()">' +
       '  <div ng-if="showSpinner()">' +
-      '    <div ng-if="showSpinner()">' +
-      '      <div ng-if="showSpinner()">' +
-      '        <div ng-if="showSpinner()">' +
-      '          <div ng-if="showSpinner()">' +
-      '            <div ng-if="showSpinner()">' +
-      '              Searching' +
-      '            </div>' +
-      '          </div>' +
-      '        </div>' +
-      '      </div>' +
-      '    </div>' +
+      '    Searching' +
       '  </div>' +
       '  <div ng-if="showHour()" class="time">' +
       '    <div ng-if="showHour()">' +
@@ -87,20 +73,8 @@ directive("myCalendarCell", function() {
       '    </div>' +
       '  </div>' +
       '  <div ng-if="showSearchResults()">' +
-      '    <div ng-if="showSearchResults()">' +
-      '      <div ng-if="showSearchResults()">' +
-      '        <div ng-if="showSearchResults()">' +
-      '          <div ng-if="showSearchResults()">' +
-      '            <div ng-if="showSearchResults()">' +
-      '              <div ng-if="showSearchResults()">' +
-      '                <div>{{status.searchResults.options}}</div>' +
-      '                <div>results</div>' +
-      '              </div>' +
-      '            </div>' +
-      '          </div>' +
-      '        </div>' +
-      '      </div>' +
-      '    </div>' +
+      '    <div>{{status.searchResults.options}}</div>' +
+      '    <div>results</div>' +
       '  </div>' +
       '</div>',
     link: function(scope, element, attrs) {
