@@ -167,23 +167,21 @@ var Cell = React.createClass({
     this.props.events.on('search', () => this.search());
   },
   render: function() {
-    var options = this.state.searchResults && this.state.searchResults.options;
-    var classes = React.addons.classSet({
-      'time'        : !this.state.isSearching && options === undefined,
-      'searching'   : this.state.isSearching,
-      'good-results': options && options > 3,
-      'weak-results': options && options > 1 && options <= 3,
-      'bad-results' : options === 0 || options === 1
-    });
     if (this.state.isSearching) {
       return (
         <td className='hour-cell'>
-          <div className={classes}>
+          <div className='searching'>
             Searching
           </div>
         </td>
       );
     } else if (this.state.searchResults) {
+      var options = this.state.searchResults.options;
+      var classes = React.addons.classSet({
+        'good-results': options > 3,
+        'weak-results': options > 1 && options <= 3,
+        'bad-results' : options >= 0 && options <= 1
+      });
       return (
         <td className='hour-cell' onClick={this.clicked}>
           <div className={classes}>
@@ -195,7 +193,7 @@ var Cell = React.createClass({
     } else {
       return (
         <td className='hour-cell' onClick={this.clicked}>
-          <div className={classes}>
+          <div className='time'>
             {this.props.hour}:00
           </div>
         </td>
@@ -204,7 +202,8 @@ var Cell = React.createClass({
   },
   getInitialState: function() {
     return {
-      isSearching: false
+      isSearching: false,
+      searchResults: null
     }
   },
   clicked: function() {

@@ -17,10 +17,6 @@ table {
     border: 1px solid gray;
 }
 
-.day-header:hover {
-    cursor: pointer;
-}
-
 .hour-cell:hover > div {
     background-color: #559 !important;
     color: white;
@@ -42,10 +38,11 @@ table {
 
 .hour-cell .time {
   padding-top: 10px; /* poor man's vertical centering */
+  color: #555;
 }
 
 .hour-cell .searching {
-    color: blue;
+    color: #88d;
     font-size: 12px;
     padding-top: 12px; /* poor man's vertical centering */
 }
