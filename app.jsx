@@ -13,7 +13,7 @@ angular.module("myapp", []).
 directive("myCalendar", function() {
     return {
         restrict: 'E',
-        scope: {},
+        scope: true,
         replace: true,
         template:
             '<div class="calendar">' +
@@ -54,23 +54,11 @@ directive("myCalendarCell", function() {
     scope: true,
     template:
       '<div ng-click="cellClicked(day, hour)" ng-class="cellClass()">' +
+      '  <div ng-if="showHour()" class="time">' +
+      '    {{hour}}:00' +
+      '  </div>' +
       '  <div ng-if="showSpinner()">' +
       '    Searching' +
-      '  </div>' +
-      '  <div ng-if="showHour()" class="time">' +
-      '    <div ng-if="showHour()">' +
-      '      <div ng-if="showHour()">' +
-      '        <div ng-if="showHour()">' +
-      '          <div ng-if="showHour()">' +
-      '            <div ng-if="showHour()">' +
-      '              <div ng-if="showHour()">' +
-      '                {{hour}}:00' +
-      '              </div>' +
-      '            </div>' +
-      '          </div>' +
-      '        </div>' +
-      '      </div>' +
-      '    </div>' +
       '  </div>' +
       '  <div ng-if="showSearchResults()">' +
       '    <div>{{status.searchResults.options}}</div>' +
@@ -109,32 +97,25 @@ directive("myCalendarCell", function() {
         delete $scope.status.searchResults;
         $scope.status.isSearching = true;
         // Simulate an AJAX request:
-        //setTimeout(function() {
         $timeout(function() {
           $scope.status.isSearching = false;
           $scope.status.searchResults = {options: Math.floor(Math.random() * 5)};
-          //$scope.$digest();
         }, randomMillis());
       }
-      $scope.$on('daySearchRequested', function(event, day) {
-        if (day == $scope.day) {
-          $scope.cellClicked();
-        }
-      });
       $scope.$on('allSearchRequested', function() {
         $scope.cellClicked();
       });
     }
   }
 }).
+
 directive("myCalendarReact", function() {
   return {
     restrict: 'E',
     scope: {},
     template: '<div></div>',
     link: function(scope, element, attrs) {
-      var cells = []
-      React.render(<Calendar cells={cells}/>, element[0]);
+      React.render(<Calendar/>, element[0]);
     }
   }
 });
@@ -272,14 +253,15 @@ var Row = React.createClass({
 var Calendar = React.createClass({
   getInitialState: function() {
     return {
-      isLoaded: false
+      isLoaded: false,
+      cells: []
     }
   },
   load: function() {
     this.setState({isLoaded: true});
   },
   render: function() {
-    var cells = this.props.cells;
+    var cells = this.state.cells;
     return (
       <div className='calendar'>
         {this.state.isLoaded || <button className='btn' onClick={this.load}>Load</button>}
@@ -296,7 +278,7 @@ var Calendar = React.createClass({
       )
   },
   searchAll: function(args) {
-    this.props.cells.forEach(function(cell) {
+    this.state.cells.forEach(function(cell) {
       cell.search();
     });
   }
