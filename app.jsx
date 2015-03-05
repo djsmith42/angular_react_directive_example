@@ -19,22 +19,22 @@ directive("myCalendar", function() {
         scope: true,
         replace: true,
         template:
-            '<div class="calendar">' +
-            ' <button class="btn" ng-hide="loaded" ng-click="load()">Load</button>' +
-            ' <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>' +
-            ' <table ng-if="loaded">' +
-            '  <tr>' +
-            '   <th ng-repeat="day in days" class="day-header">' +
-            '     {{day}}' +
-            '   </th>' +
-            '  </tr>' +
-            '  <tr ng-repeat="hour in hours">' +
-            '   <td ng-repeat="day in days" class="hour-cell">' +
-            '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
-            '   </td>' +
-            '  </tr>' +
-            ' </table>' +
-            '</button>',
+          '<div>' +
+          ' <button class="btn" ng-hide="loaded" ng-click="load()">Load</button>' +
+          ' <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>' +
+          ' <table ng-if="loaded">' +
+          '  <tr>' +
+          '   <th ng-repeat="day in days" class="day-header">' +
+          '     {{day}}' +
+          '   </th>' +
+          '  </tr>' +
+          '  <tr ng-repeat="hour in hours">' +
+          '   <td ng-repeat="day in days" class="hour-cell">' +
+          '     <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>' +
+          '   </td>' +
+          '  </tr>' +
+          ' </table>' +
+          '</button>',
         link: function(scope, element, attrs) {
             scope.loaded = false;
             scope.hours = HOURS;
@@ -242,7 +242,7 @@ var Calendar = React.createClass({
   render: function() {
     var events = this.events;
     return (
-      <div className='calendar'>
+      <div>
         {this.state.isLoaded || <button className='btn' onClick={this.load}>Load</button>}
         {this.state.isLoaded && <button className='btn' onClick={this.searchAll}>Search all month</button>}
         {this.state.isLoaded &&
