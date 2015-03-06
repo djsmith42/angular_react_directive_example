@@ -6,7 +6,7 @@ require('./style.css');
 var angular = require('angular');
 
 var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-var DAYS  = ["1 October", "2 October", "3 October", "4 October", "5 October", "6 October", "7 October", "8 October", "9 October", "10 October", "11 October", "12  October", "13 October", "14 October", "15 October", "16 October", "17 October", "18 October", "19 October", "20 October", "21 October", "22 October", "23 October", "24 October", "25 October", "26 October", "27 October", "28 October", "29 October", "30 October", "31 October"];
+var DAYS  = ["Oct 1", "Oct 2", "Oct 3", "Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9", "Oct 10", "Oct 11", "Oct 12 ", "Oct 13", "Oct 14", "Oct 15", "Oct 16", "Oct 17", "Oct 18", "Oct 19", "Oct 20", "Oct 21", "Oct 22", "Oct 23", "Oct 24", "Oct 25", "Oct 26", "Oct 27", "Oct 28", "Oct 29", "Oct 30", "Oct 31"];
 
 var randomMillis = function() {
   return Math.floor(Math.random() * 10000);
@@ -62,11 +62,11 @@ directive("myCalendarCell", function() {
           {{hour}}:00
         </div>
         <div ng-if="showSpinner()">
-          Searching
+          ...
         </div>
         <div ng-if="showSearchResults()">
           <div>{{status.searchResults.options}}</div>
-          <div>results</div>
+          <div class="result-label">results</div>
         </div>
       </div>
       `,
@@ -138,7 +138,7 @@ var Cell = React.createClass({
       return (
         <td className='hour-cell'>
           <div className='searching'>
-            Searching
+            ...
           </div>
         </td>
       );
@@ -153,7 +153,7 @@ var Cell = React.createClass({
         <td className='hour-cell' onClick={this.clicked}>
           <div className={classes}>
             <div>{this.state.searchResults}</div>
-            <div>results</div>
+            <div className="result-label">results</div>
           </div>
         </td>
       );

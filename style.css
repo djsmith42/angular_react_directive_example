@@ -15,6 +15,7 @@ table {
 
 .day-header {
     border: 1px solid gray;
+    white-space: nowrap;
 }
 
 .hour-cell:hover > div {
@@ -28,7 +29,7 @@ table {
     border-left: 1px solid gray;
     border-bottom: 1px solid #eee;
     cursor: pointer;
-    height: 40px;
+    height: 30px;
     padding: 0;
 }
 
@@ -37,7 +38,7 @@ table {
 }
 
 .hour-cell .time {
-  padding-top: 10px; /* poor man's vertical centering */
+  padding-top: 8px; /* poor man's vertical centering */
   color: #555;
 }
 
@@ -45,6 +46,10 @@ table {
     color: #88d;
     font-size: 12px;
     padding-top: 12px; /* poor man's vertical centering */
+}
+
+.hour-cell .result-label {
+  font-size: 10px;
 }
 
 .hour-cell .good-results {
