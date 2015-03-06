@@ -1,12 +1,8 @@
-/**
- * @jsx React.DOM
- */
-
 require('./style.css');
 var angular = require('angular');
+var _ = require('lodash');
 
-var HOURS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-var DAYS  = ["Oct 1", "Oct 2", "Oct 3", "Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9", "Oct 10", "Oct 11", "Oct 12 ", "Oct 13", "Oct 14", "Oct 15", "Oct 16", "Oct 17", "Oct 18", "Oct 19", "Oct 20", "Oct 21", "Oct 22", "Oct 23", "Oct 24", "Oct 25", "Oct 26", "Oct 27", "Oct 28", "Oct 29", "Oct 30", "Oct 31"];
+var DAYS = _.range(1, 32).map((day) => ("Oct " + day));
 
 var randomMillis = function() {
   return Math.floor(Math.random() * 10000);
@@ -38,7 +34,7 @@ directive("myCalendar", function() {
          `,
         link: function(scope, element, attrs) {
             scope.loaded = false;
-            scope.hours = HOURS;
+            scope.hours = _.range(24);
             scope.days = DAYS;
 
             scope.searchAll = function() {
@@ -195,6 +191,32 @@ var Cell = React.createClass({
 });
 
 var Calendar = React.createClass({
+  render: function() {
+    return (
+      <div>
+        {this.state.isLoaded ||
+         <button className='btn' onClick={this.load}>Load</button>}
+        {this.state.isLoaded &&
+         <button className='btn' onClick={this.searchAll}>Search all month</button>}
+        {this.state.isLoaded &&
+         <table>
+           <tr>
+             {DAYS.map((day) => (
+               <th className='day-header' onClick={this.clicked}>{day}</th>
+             ))}
+           </tr>
+           {_.range(24).map((hour) => (
+             <tr>
+               {DAYS.map((day) => (
+                 <Cell hour={hour} day={day} key={day} events={this.events} />
+               ))}
+             </tr>
+           ))}
+         </table>
+        }
+      </div>
+      )
+  },
   componentWillMount: function() {
     this.events = new EventEmitter();
     this.events.setMaxListeners(0);
@@ -206,31 +228,6 @@ var Calendar = React.createClass({
   },
   load: function() {
     this.setState({isLoaded: true});
-  },
-  render: function() {
-    var events = this.events;
-    return (
-      <div>
-        {this.state.isLoaded || <button className='btn' onClick={this.load}>Load</button>}
-        {this.state.isLoaded && <button className='btn' onClick={this.searchAll}>Search all month</button>}
-        {this.state.isLoaded &&
-        <table>
-          <tr>
-            {DAYS.map((day) => (
-              <th className='day-header' onClick={this.clicked}>{day}</th>
-            ))}
-          </tr>
-          {HOURS.map((hour) => (
-            <tr>
-              {DAYS.map((day) => (
-                <Cell hour={hour} day={day} key={day} events={events} />
-              ))}
-            </tr>
-          ))}
-        </table>
-        }
-      </div>
-      )
   },
   searchAll: function(args) {
     this.events.emit('search');
