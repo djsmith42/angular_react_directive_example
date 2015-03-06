@@ -216,17 +216,17 @@ var Calendar = React.createClass({
         {this.state.isLoaded &&
         <table>
           <tr>
-            {DAYS.map((day) => {
-              return <th className='day-header' onClick={this.clicked}>{day}</th>
-            })}
+            {DAYS.map((day) => (
+              <th className='day-header' onClick={this.clicked}>{day}</th>
+            ))}
           </tr>
-          {HOURS.map((hour) => {
-            return <tr>
-              {DAYS.map((day) => {
-                return <Cell hour={hour} day={day} key={day} events={events} />
-              })}
+          {HOURS.map((hour) => (
+            <tr>
+              {DAYS.map((day) => (
+                <Cell hour={hour} day={day} key={day} events={events} />
+              ))}
             </tr>
-          })}
+          ))}
         </table>
         }
       </div>
