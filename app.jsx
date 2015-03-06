@@ -132,43 +132,7 @@ directive("myCalendarReact", function() {
 var EventEmitter = require('events');
 var React = require('react/addons');
 
-var HeaderCell = React.createClass({
-  render: function() {
-    return (
-      <th className='day-header' onClick={this.clicked}>{this.props.day}</th>
-    )
-  }
-});
-
-var HeaderRow = React.createClass({
-  render: function() {
-    return (
-      <tr>
-        {DAYS.map((day) => {
-          return <HeaderCell day={day} key={day} />
-        })}
-      </tr>
-      );
-  }
-});
-
 var Cell = React.createClass({
-  search: function() {
-    var self = this;
-    self.setState({
-      isSearching: true,
-      searchResults: {options: null}
-    });
-    setTimeout(function() {
-      self.setState({
-        isSearching: false,
-        searchResults: {options: Math.floor(Math.random() * 5)}
-      });
-    }, randomMillis());
-  },
-  componentWillMount: function() {
-    this.props.events.on('search', () => this.search());
-  },
   render: function() {
     if (this.state.isSearching) {
       return (
@@ -211,20 +175,22 @@ var Cell = React.createClass({
   },
   clicked: function() {
     this.search();
-  }
-});
-
-var Row = React.createClass({
-  render: function() {
-    var hour = this.props.hour;
-    var events = this.props.events;
-    return (
-      <tr>
-        {DAYS.map((day) => {
-          return <Cell hour={hour} day={day} key={day} events={events} />
-          })}
-      </tr>
-    )
+  },
+  search: function() {
+    var self = this;
+    self.setState({
+      isSearching: true,
+      searchResults: {options: null}
+    });
+    setTimeout(function() {
+      self.setState({
+        isSearching: false,
+        searchResults: {options: Math.floor(Math.random() * 5)}
+      });
+    }, randomMillis());
+  },
+  componentWillMount: function() {
+    this.props.events.on('search', () => this.search());
   }
 });
 
@@ -249,9 +215,17 @@ var Calendar = React.createClass({
         {this.state.isLoaded && <button className='btn' onClick={this.searchAll}>Search all month</button>}
         {this.state.isLoaded &&
         <table>
-          <HeaderRow />
+          <tr>
+            {DAYS.map((day) => {
+              return <th className='day-header' onClick={this.clicked}>{day}</th>
+            })}
+          </tr>
           {HOURS.map((hour) => {
-            return <Row hour={hour} key={hour} events={events}/>
+            return <tr>
+              {DAYS.map((day) => {
+                return <Cell hour={hour} day={day} key={day} events={events} />
+              })}
+            </tr>
           })}
         </table>
         }
