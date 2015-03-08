@@ -16,17 +16,17 @@ directive("myCalendar", function() {
         replace: true,
         template:`
           <div>
-           <button class="btn" ng-hide="loaded" ng-click="load()">Load</button>
-           <button class="btn" ng-show="loaded" ng-click="searchAll()">Search all month</button>
-           <table ng-if="loaded">
+           <button class="btn" ng-hide="::loaded ? loaded : undefined" ng-click="load()">Load</button>
+           <button class="btn" ng-show="::loaded ? loaded : undefined" ng-click="searchAll()">Search all month</button>
+           <table ng-if="::loaded ? loaded : undefined">
             <tr>
-             <th ng-repeat="day in days" class="day-header">
+             <th ng-repeat="day in ::days" class="day-header">
                {{day}}
              </th>
             </tr>
-            <tr ng-repeat="hour in hours">
-             <td ng-repeat="day in days" class="hour-cell">
-               <my-calendar-cell hour="{{hour}}" day="{{day}}"></my-calendar-cell>
+            <tr ng-repeat="hour in ::hours">
+             <td ng-repeat="day in ::days" class="hour-cell">
+               <my-calendar-cell hour="{{::hour}}" day="{{::day}}"></my-calendar-cell>
              </td>
             </tr>
            </table>
@@ -53,14 +53,14 @@ directive("myCalendarCell", function() {
     replace: true,
     scope: true,
     template: `
-      <div ng-click="cellClicked(day, hour)" ng-class="cellClass()">
-        <div ng-if="showHour()" class="time">
-          {{hour}}:00
+      <div ng-click="cellClicked(day, hour)" class="{{cellClass()}}">
+        <div ng-show="showHour()" class="time">
+          {{::hour}}:00
         </div>
-        <div ng-if="showSpinner()">
+        <div ng-show="showSpinner()">
           ...
         </div>
-        <div ng-if="showSearchResults()">
+        <div ng-show="showSearchResults()">
           <div>{{status.searchResults.options}}</div>
           <div class="result-label">results</div>
         </div>
@@ -69,9 +69,9 @@ directive("myCalendarCell", function() {
     link: function(scope, element, attrs) {
       scope.day = attrs.day;
       scope.hour = attrs.hour;
-      scope.status = {};
     },
     controller: function($scope, $rootScope, $timeout) {
+      $scope.status = {};
       $scope.showSpinner = function() {
         return $scope.status.isSearching;
       }
@@ -93,19 +93,23 @@ directive("myCalendarCell", function() {
             return 'bad-results'
           }
         }
+        return '';
       }
       $scope.cellClicked = function() {
-        delete $scope.status.searchResults;
+        $scope.status.searchResults = null;
         $scope.status.isSearching = true;
         // Simulate an AJAX request:
         $timeout(function() {
           $scope.status.isSearching = false;
           $scope.status.searchResults = {options: Math.floor(Math.random() * 5)};
-        }, randomMillis());
+        }, randomMillis(), false).then(localDigest);
       }
       $scope.$on('allSearchRequested', function() {
         $scope.cellClicked();
       });
+      function localDigest() {
+        $scope.$digest();
+      }
     }
   }
 }).
