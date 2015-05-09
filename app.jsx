@@ -98,9 +98,10 @@ directive("myCalendarCell", function() {
         delete $scope.status.searchResults;
         $scope.status.isSearching = true;
         // Simulate an AJAX request:
-        $timeout(function() {
+        setTimeout(function() {
           $scope.status.isSearching = false;
           $scope.status.searchResults = {options: Math.floor(Math.random() * 5)};
+          $scope.$digest();
         }, randomMillis());
       }
       $scope.$on('allSearchRequested', function() {
